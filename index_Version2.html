@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Niharika's 20th Birthday 🎂</title>
+</head>
+<body class="landing-page">
+    <audio id="mysteryMusic" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="landing-container">
+        <div class="stars"></div>
+        
+        <div class="countdown-wrapper">
+            <h1 class="landing-title">Niharika Turns 20! 🎉</h1>
+            
+            <div class="countdown-timer">
+                <div class="timer-unit">
+                    <span id="days" class="timer-value">00</span>
+                    <p class="timer-label">Days</p>
+                </div>
+                <div class="timer-separator">:</div>
+                <div class="timer-unit">
+                    <span id="hours" class="timer-value">00</span>
+                    <p class="timer-label">Hours</p>
+                </div>
+                <div class="timer-separator">:</div>
+                <div class="timer-unit">
+                    <span id="minutes" class="timer-value">00</span>
+                    <p class="timer-label">Minutes</p>
+                </div>
+                <div class="timer-separator">:</div>
+                <div class="timer-unit">
+                    <span id="seconds" class="timer-value">00</span>
+                    <p class="timer-label">Seconds</p>
+                </div>
+            </div>
+
+            <div id="redirectContainer" class="redirect-container" style="display: none;">
+                <p class="celebration-text">🎊 It's Time to Celebrate! 🎊</p>
+                <a href="dashboard.html" class="redirect-button">Enter the Birthday Party →</a>
+            </div>
+
+            <p class="landing-subtitle">Get ready for something magical...</p>
+        </div>
+
+        <div class="floating-balloon"></div>
+        <div class="floating-balloon"></div>
+        <div class="floating-balloon"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Start mystery music
+        window.addEventListener('load', function() {
+            const music = document.getElementById('mysteryMusic');
+            music.volume = 0.3;
+            music.play().catch(e => console.log('Audio autoplay blocked'));
+        });
+
+        // Update countdown with seconds
+        function updateCountdown() {
+            const currentYear = new Date().getFullYear();
+            let birthday = new Date(currentYear, 9, 19, 0, 0, 0); // October 19
+            
+            if (new Date() > birthday) {
+                birthday = new Date(currentYear + 1, 9, 19, 0, 0, 0);
+            }
+            
+            const now = new Date();
+            const difference = birthday - now;
+            
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((difference / 1000 / 60) % 60);
+                const seconds = Math.floor((difference / 1000) % 60);
+                
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            } else {
+                // Timer ended - show redirect button
+                document.getElementById('redirectContainer').style.display = 'block';
+                document.querySelector('.countdown-timer').style.display = 'none';
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>

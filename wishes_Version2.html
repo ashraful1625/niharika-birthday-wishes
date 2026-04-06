@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Birthday Wishes 💌</title>
+</head>
+<body class="wishes-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2 class="nav-title">💌 Birthday Wishes</h2>
+            <a href="dashboard.html" class="nav-link">← Back</a>
+        </div>
+    </nav>
+
+    <div class="wishes-container">
+        <h1>Birthday Wishes for Niharika 💝</h1>
+        
+        <div class="add-wish-section">
+            <h3>Add Your Wish</h3>
+            <div class="wish-input-area">
+                <input type="text" id="wishInput" placeholder="Write your birthday wish...">
+                <button onclick="addWish()" class="add-wish-btn">Add Wish 🎊</button>
+            </div>
+        </div>
+
+        <div class="wishes-grid" id="wishesContainer">
+            <div class="wish-card">
+                <p>"Wishing you a year filled with happiness, health, and all your dreams coming true! Happy 20th Birthday! 🎉"</p>
+                <span class="wish-author">- Best Friend</span>
+            </div>
+            <div class="wish-card">
+                <p>"May your 20th year be an adventure! Thank you for being such an amazing friend. Here's to more memories!"</p>
+                <span class="wish-author">- College Friend</span>
+            </div>
+            <div class="wish-card">
+                <p>"Happy Birthday to the most wonderful person! Wishing you success, love, and endless joy! 💕"</p>
+                <span class="wish-author">- Family</span>
+            </div>
+            <div class="wish-card">
+                <p>"20 looks good on you! Here's to celebrating the amazing person you are. Happy Birthday! 🌟"</p>
+                <span class="wish-author">- Close Friend</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function addWish() {
+            const input = document.getElementById('wishInput');
+            const wish = input.value.trim();
+            
+            if (!wish) {
+                alert('Please write a wish!');
+                return;
+            }
+            
+            const card = document.createElement('div');
+            card.className = 'wish-card';
+            card.innerHTML = `
+                <p>"${escapeHtml(wish)}"</p>
+                <span class="wish-author">- A Friend</span>
+            `;
+            
+            document.getElementById('wishesContainer').appendChild(card);
+            input.value = '';
+            triggerConfetti();
+        }
+
+        function escapeHtml(text) {
+            const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'};
+            return text.replace(/[&<>"]/g, m => map[m]);
+        }
+
+        function triggerConfetti() {
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '0px';
+                confetti.style.background = ['#667eea', '#764ba2', '#ffd700', '#ff6b9d'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        document.getElementById('wishInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addWish();
+        });
+    </script>
+</body>
+</html>
