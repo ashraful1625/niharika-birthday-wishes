@@ -3,59 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <title>Special Messages 💝</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* sunset palette */
+            --sky-top:    #1a0a2e;   /* deep dusk purple */
+            --sky-mid:    #3d1c5e;   /* violet */
+            --sky-horiz:  #c0412a;   /* burnt orange-red horizon */
+            --sky-glow:   #e8822a;   /* orange glow */
+            --sky-gold:   #f5c842;   /* horizon gold */
+            --card-bg:    rgba(255,255,255,0.07);
+            --card-border:rgba(255,255,255,0.13);
+            --text-bright:#fef0dc;
+            --text-soft:  rgba(252,228,200,0.72);
+            --text-muted: rgba(240,200,160,0.5);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--text-bright);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            /* full-page sunset gradient — top is dusk, bottom is deep night */
+            background: linear-gradient(180deg,
+                var(--sky-top)   0%,
+                var(--sky-mid)   18%,
+                #6b2a4a          32%,
+                #b03830          44%,
+                var(--sky-horiz) 52%,
+                var(--sky-glow)  58%,
+                var(--sky-gold)  63%,
+                #d4622a          70%,
+                #8b2252          80%,
+                #3d1255          90%,
+                #0f0820          100%
+            );
+            background-attachment: fixed;
+        }
+
+        /* ── HORIZON GLOW (fixed overlay) ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 120% 40% at 50% 58%,
+                    rgba(245,200,66,0.22) 0%,
+                    rgba(232,130,42,0.18) 30%,
+                    transparent 65%),
+                radial-gradient(ellipse 80% 30% at 50% 56%,
+                    rgba(255,160,60,0.12) 0%,
+                    transparent 50%);
+        }
+
+        /* ── STARS ── */
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; right: 0; height: 55vh;
+            z-index: 0; pointer-events: none;
+            background-image:
+                radial-gradient(1px 1px at  8% 12%, rgba(255,255,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px 1px at 18% 28%, rgba(255,255,255,0.55) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 30% 8%, rgba(255,255,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px 1px at 42% 18%, rgba(255,255,255,0.5)  0%, transparent 100%),
+                radial-gradient(1px 1px at 55% 5%,  rgba(255,255,255,0.75) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 65% 20%, rgba(255,255,255,0.8) 0%, transparent 100%),
+                radial-gradient(1px 1px at 75% 10%, rgba(255,255,255,0.6)  0%, transparent 100%),
+                radial-gradient(1px 1px at 85% 25%, rgba(255,255,255,0.5)  0%, transparent 100%),
+                radial-gradient(2px 2px at 93% 6%,  rgba(255,255,255,0.95) 0%, transparent 100%),
+                radial-gradient(1px 1px at  4% 38%, rgba(255,255,255,0.4)  0%, transparent 100%),
+                radial-gradient(1px 1px at 22% 42%, rgba(255,255,255,0.35) 0%, transparent 100%),
+                radial-gradient(1px 1px at 48% 33%, rgba(255,255,255,0.5)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 70% 38%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 88% 44%, rgba(255,255,255,0.4)  0%, transparent 100%);
+            animation: starTwinkle 4s ease-in-out infinite alternate;
+        }
+        @keyframes starTwinkle {
+            0%   { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* ── FLOATING SILHOUETTES (birds/dust) ── */
+        .floater {
+            position: fixed; pointer-events: none; z-index: 0;
+            opacity: 0;
+            animation: drift linear infinite;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+        }
+        @keyframes drift {
+            0%   { opacity: 0; transform: translateX(0) translateY(0) rotate(0deg); }
+            10%  { opacity: 0.35; }
+            90%  { opacity: 0.25; }
+            100% { opacity: 0; transform: translateX(60px) translateY(-30px) rotate(8deg); }
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky; top: 0; z-index: 300;
+            background: rgba(15,8,32,0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 13px 20px;
+            border-bottom: 1px solid rgba(245,200,66,0.15);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+        }
+        .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+        .nav-brand {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.1rem, 4vw, 1.6rem);
+            background: linear-gradient(90deg, var(--sky-gold), var(--sky-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.02em;
+        }
+        .nav-back {
+            color: rgba(245,200,66,0.85);
+            text-decoration: none;
+            font-family: 'Lora', serif; font-size: 0.88rem; font-weight: 600;
+            padding: 7px 16px;
+            border: 1.5px solid rgba(245,200,66,0.4);
+            border-radius: 22px;
+            transition: all 0.25s; white-space: nowrap;
+            min-height: 42px; display: flex; align-items: center; flex-shrink: 0;
+        }
+        .nav-back:hover {
+            background: rgba(245,200,66,0.15);
+            border-color: rgba(245,200,66,0.7);
+            color: var(--sky-gold);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative; z-index: 1;
+            text-align: center;
+            padding: clamp(40px,9vw,80px) 20px clamp(20px,4vw,36px);
+        }
+
+        /* sun disc */
+        .hero-sun {
+            display: block;
+            width: clamp(56px,14vw,80px);
+            height: clamp(56px,14vw,80px);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: radial-gradient(circle at 40% 38%,
+                #fff5c0 0%,
+                var(--sky-gold) 30%,
+                var(--sky-glow) 60%,
+                #c0412a 100%);
+            box-shadow:
+                0 0 0   clamp(6px,2vw,10px) rgba(245,200,66,0.18),
+                0 0 0   clamp(14px,4vw,24px) rgba(232,130,42,0.12),
+                0 0 clamp(30px,8vw,60px) clamp(10px,3vw,20px) rgba(232,130,42,0.10);
+            animation: sunPulse 4s ease-in-out infinite;
+        }
+        @keyframes sunPulse {
+            0%,100% { box-shadow: 0 0 0 clamp(6px,2vw,10px) rgba(245,200,66,0.18), 0 0 0 clamp(14px,4vw,24px) rgba(232,130,42,0.12), 0 0 clamp(30px,8vw,60px) clamp(10px,3vw,20px) rgba(232,130,42,0.10); }
+            50%     { box-shadow: 0 0 0 clamp(8px,3vw,14px) rgba(245,200,66,0.25), 0 0 0 clamp(18px,5vw,30px) rgba(232,130,42,0.16), 0 0 clamp(40px,10vw,80px) clamp(14px,4vw,24px) rgba(232,130,42,0.14); }
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.95rem,3vw,1.15rem);
+            color: var(--sky-gold); letter-spacing: 0.08em;
+            margin-bottom: 12px;
+            opacity: 0; animation: fadeUp 0.7s 0.1s ease-out forwards;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem,7.5vw,3.6rem);
+            font-style: italic; line-height: 1.18; margin-bottom: 12px;
+            background: linear-gradient(160deg, #fff5dc 0%, var(--sky-gold) 40%, #e88060 80%, #c8b8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0; animation: fadeUp 0.7s 0.2s ease-out forwards;
+        }
+        .hero-sub {
+            font-family: 'Lora', serif;
+            font-size: clamp(0.9rem,2.8vw,1.05rem);
+            font-style: italic; color: var(--text-soft);
+            max-width: 400px; margin: 0 auto;
+            opacity: 0; animation: fadeUp 0.7s 0.32s ease-out forwards;
+        }
+        .hero-divider {
+            display: flex; align-items: center; justify-content: center;
+            gap: 14px; margin: 22px auto 0; max-width: 260px;
+            opacity: 0; animation: fadeUp 0.7s 0.44s ease-out forwards;
+        }
+        .divider-line {
+            flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(245,200,66,0.5), transparent);
+        }
+        .divider-icon { font-size: 1rem; opacity: 0.7; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── CARDS GRID ── */
+        .cards-section {
+            position: relative; z-index: 1;
+            max-width: 1100px; margin: 0 auto;
+            padding: 10px 16px clamp(60px,10vw,100px);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: clamp(16px,3vw,26px);
+        }
+        @media (min-width: 580px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 900px)  { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* ── SINGLE CARD ── */
+        .msg-card {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+            padding: clamp(22px,4vw,32px) clamp(20px,3.5vw,28px) clamp(18px,3vw,24px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow:
+                0 8px 32px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: transform 0.32s cubic-bezier(0.34,1.4,0.64,1),
+                        box-shadow 0.32s ease,
+                        border-color 0.3s ease;
+            display: flex; flex-direction: column;
+            opacity: 0;   /* revealed by IntersectionObserver */
+        }
+        .msg-card.visible {
+            animation: cardRise 0.6s ease-out both;
+        }
+        @keyframes cardRise {
+            from { opacity: 0; transform: translateY(28px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+
+        .msg-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(245,200,66,0.3);
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.45),
+                0 0 30px rgba(232,130,42,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .msg-card:active { transform: scale(0.97); }
+
+        /* top glow bar — 12 sunset-toned accent lines */
+        .msg-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            border-radius: 20px 20px 0 0;
+        }
+        .nc-1::before  { background: linear-gradient(90deg,#c9485b,#f0a0a0); }
+        .nc-2::before  { background: linear-gradient(90deg,#b06030,#e8a060); }
+        .nc-3::before  { background: linear-gradient(90deg,#d08820,#f8d060); }
+        .nc-4::before  { background: linear-gradient(90deg,#a84050,#e07090); }
+        .nc-5::before  { background: linear-gradient(90deg,#6840a0,#b080e0); }
+        .nc-6::before  { background: linear-gradient(90deg,#c06030,#e89050); }
+        .nc-7::before  { background: linear-gradient(90deg,#e8a030,#f8d870); }
+        .nc-8::before  { background: linear-gradient(90deg,#4860a0,#8090d0); }
+        .nc-9::before  { background: linear-gradient(90deg,#8840a0,#c070e0); }
+        .nc-10::before { background: linear-gradient(90deg,#d0a020,#f0d060); }
+        .nc-11::before { background: linear-gradient(90deg,#38806a,#68c0a0); }
+        .nc-12::before { background: linear-gradient(90deg,#c03040,#e87090); }
+
+        /* accent colour per card */
+        .nc-1  { --ac:#f0a0a0; } .nc-2  { --ac:#e8a060; } .nc-3  { --ac:#f8d060; }
+        .nc-4  { --ac:#e07090; } .nc-5  { --ac:#b080e0; } .nc-6  { --ac:#e89050; }
+        .nc-7  { --ac:#f8d870; } .nc-8  { --ac:#8090d0; } .nc-9  { --ac:#c070e0; }
+        .nc-10 { --ac:#f0d060; } .nc-11 { --ac:#68c0a0; } .nc-12 { --ac:#e87090; }
+
+        /* shimmer on hover */
+        .msg-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 0.55s ease;
+            pointer-events: none;
+        }
+        .msg-card:hover::after { transform: translateX(100%); }
+
+        /* ── icon ── */
+        .card-icon {
+            display: block;
+            font-size: clamp(1.3rem,4vw,1.7rem);
+            margin-bottom: 10px;
+            animation: floatIcon 5s ease-in-out infinite;
+        }
+        @keyframes floatIcon {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-5px); }
+        }
+        /* stagger icon floats */
+        .nc-1  .card-icon { animation-delay:0.0s; }
+        .nc-2  .card-icon { animation-delay:0.4s; }
+        .nc-3  .card-icon { animation-delay:0.8s; }
+        .nc-4  .card-icon { animation-delay:1.2s; }
+        .nc-5  .card-icon { animation-delay:1.6s; }
+        .nc-6  .card-icon { animation-delay:2.0s; }
+        .nc-7  .card-icon { animation-delay:2.4s; }
+        .nc-8  .card-icon { animation-delay:2.8s; }
+        .nc-9  .card-icon { animation-delay:3.2s; }
+        .nc-10 .card-icon { animation-delay:3.6s; }
+        .nc-11 .card-icon { animation-delay:4.0s; }
+        .nc-12 .card-icon { animation-delay:4.4s; }
+
+        /* ── heading ── */
+        .card-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem,3vw,1.18rem);
+            font-style: italic; font-weight: 700; line-height: 1.25;
+            margin-bottom: 12px;
+            color: var(--ac);
+        }
+
+        /* ── body text ── */
+        .card-body {
+            font-family: 'Lora', serif;
+            font-size: clamp(0.88rem,2.5vw,0.96rem);
+            line-height: 1.88;
+            color: var(--text-soft);
+            flex: 1; margin-bottom: 18px;
+        }
+
+        /* ── from line ── */
+        .card-from-wrap {
+            display: flex; align-items: center; gap: 10px;
+            margin-top: auto; padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-from-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+        .card-from {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.85rem,2.5vw,1rem);
+            font-weight: 600;
+            color: var(--ac);
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            position: relative; z-index: 1;
+            text-align: center;
+            padding: clamp(24px,5vw,40px) 20px clamp(30px,6vw,50px);
+            border-top: 1px solid rgba(245,200,66,0.12);
+        }
+        .footer-stars {
+            display: block; font-size: 0.9rem; letter-spacing: 8px;
+            opacity: 0.45; margin-bottom: 12px;
+            color: var(--sky-gold);
+            animation: starTwinkle 3.5s ease-in-out infinite alternate;
+        }
+        .footer-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.9rem,3vw,1.1rem);
+            color: var(--text-muted);
+        }
+        .footer-text strong {
+            background: linear-gradient(90deg, var(--sky-gold), var(--sky-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-style: italic;
+        }
+    </style>
 </head>
-<body class="messages-page">
+<body>
+
+    <!-- subtle floating dust/embers -->
+    <div class="floater" style="left:12%;top:60%;animation-duration:22s;animation-delay:0s">✦</div>
+    <div class="floater" style="left:30%;top:50%;animation-duration:28s;animation-delay:5s">·</div>
+    <div class="floater" style="left:60%;top:65%;animation-duration:19s;animation-delay:2s">✦</div>
+    <div class="floater" style="left:80%;top:55%;animation-duration:25s;animation-delay:8s">·</div>
+    <div class="floater" style="left:48%;top:70%;animation-duration:32s;animation-delay:3s">✦</div>
+
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="nav-container">
-            <h2 class="nav-title">💝 Special Messages</h2>
-            <a href="dashboard.html" class="nav-link">← Back</a>
+        <div class="nav-inner">
+            <span class="nav-brand">💝 Special Messages</span>
+            <a href="dashboard.html" class="nav-back">← Back</a>
         </div>
     </nav>
 
-    <div class="messages-container">
-        <h1>Heartfelt Messages for Your 20th Birthday 💌</h1>
-        
-        <div class="messages-grid">
-            <div class="message-card">
-                <h3>To Our Amazing Friend</h3>
-                <p>Niharika, as you turn 20, we want you to know how special you are. Your kindness, humor, and warmth have touched so many lives. May this year bring you incredible opportunities and unforgettable moments. Happy Birthday! 🎂</p>
-                <span class="message-from">- Your Friend Circle</span>
-            </div>
-
-            <div class="message-card">
-                <h3>A Year of New Beginnings</h3>
-                <p>20 is a magical number, and you're a magical person! This is your year to chase dreams, take risks, and create memories that will last a lifetime. We believe in you and can't wait to see all the amazing things you'll achieve!</p>
-                <span class="message-from">- Family & Friends</span>
-            </div>
-
-            <div class="message-card">
-                <h3>To the Birthday Girl</h3>
-                <p>Happy 20th Birthday, Niharika! Thank you for being the best friend anyone could ask for. Your laughter is contagious, your smile is infectious, and your heart is pure gold. Here's to celebrating YOU today and every day! 🌟</p>
-                <span class="message-from">- Best Friend Forever</span>
-            </div>
-
-            <div class="message-card">
-                <h3>Milestone Moments</h3>
-                <p>Turning 20 is more than just a birthday—it's the beginning of amazing new chapters in your life. May you be fearless in pursuing your passions, grateful for the journey, and surrounded by love always. Happy Birthday to an incredible person!</p>
-                <span class="message-from">- Close Friends</span>
-            </div>
-
-            <div class="message-card">
-                <h3>Dreams & Wishes</h3>
-                <p>On your 20th birthday, we wish you a year filled with: Love that grows stronger, Dreams that become reality, Adventures that take your breath away, and Memories that you'll treasure forever. You deserve nothing but the best! 💕</p>
-                <span class="message-from">- Your Loved Ones</span>
-            </div>
-
-            <div class="message-card">
-                <h3>Here's to You</h3>
-                <p>Niharika, you've made such a difference in all our lives. As you celebrate turning 20, we celebrate YOU—your strength, your beauty, your brilliance, and your beautiful soul. May this year be your best one yet! 🎉</p>
-                <span class="message-from">- Everyone Who Loves You</span>
-            </div>
+    <!-- Hero -->
+    <header class="hero">
+        <span class="hero-sun"></span>
+        <div class="hero-tag">✦ From the quiet hours ✦</div>
+        <h1 class="hero-title">Words Written Just for You</h1>
+        <p class="hero-sub">Some feelings are too soft for daylight — these were written under the fading sun.</p>
+        <div class="hero-divider">
+            <div class="divider-line"></div>
+            <div class="divider-icon">🌅</div>
+            <div class="divider-line"></div>
         </div>
-    </div>
+    </header>
 
-    <script src="script.js"></script>
+    <!-- Cards -->
+    <section class="cards-section">
+        <div class="cards-grid">
+
+            <div class="msg-card nc-1">
+                <span class="card-icon">🌙</span>
+                <div class="card-heading">If I Could Go Back</div>
+                <p class="card-body">If I could go back to those moments, I would choose to respond with softness instead of silence. I would listen more, understand more, and never let you feel ignored. Some distances weren't meant to happen — they were just created by our silence. Today, I just want to be better for you.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from memories we never fixed 🌙💭</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-2">
+                <span class="card-icon">🤍</span>
+                <div class="card-heading">You Were Never Just Someone</div>
+                <p class="card-body">You were never just someone I knew… you were someone I felt, even in silence. No matter how distant things became, a part of me always recognized you differently. Maybe I didn't show it the right way, but that doesn't mean it wasn't real. Some connections don't fade — they just get hidden.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from a place I never left 🤍✨</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-3">
+                <span class="card-icon">🕊️</span>
+                <div class="card-heading">The Words I Didn't Say</div>
+                <p class="card-body">There were so many things I should've said, but I chose quiet instead. Not because I didn't feel anything, but because I didn't know how to express it. And maybe that silence hurt more than any words could. If I get another chance, I won't stay quiet again.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from unsent feelings 🕊️💬</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-4">
+                <span class="card-icon">💔</span>
+                <div class="card-heading">You Deserved Better From Me</div>
+                <p class="card-body">You deserved warmth, clarity, and effort — not confusion and distance. Looking back, I realize how much I could've done differently. It wasn't that I didn't care… I just didn't handle it right. And for that, I'm genuinely sorry.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from the version of me that learned late 💔🌫️</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-5">
+                <span class="card-icon">💫</span>
+                <div class="card-heading">Still, You Matter</div>
+                <p class="card-body">No matter how things turned out, you still matter to me in a way I can't explain. It's not about the past anymore — it's about the truth of what I felt. Some people leave a mark without even trying. And you're one of them.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from something that never faded 💫🤍</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-6">
+                <span class="card-icon">🫶</span>
+                <div class="card-heading">Less Ego, More Us</div>
+                <p class="card-body">Maybe it was never about who texted first or who cared less. Maybe it was always about two people who didn't know how to show they cared. If we ever try again, I don't want ego between us. I just want honesty, effort, and something real.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from what we could have been 🫶✨</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-7">
+                <span class="card-icon">🌸</span>
+                <div class="card-heading">The Version of Us I Miss</div>
+                <p class="card-body">I don't miss just you… I miss the version of us that felt easy and real. The way things used to flow without hesitation. Somewhere along the way, we lost that. But it still lives in my memories.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from a softer time 🌸💭</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-8">
+                <span class="card-icon">🧠</span>
+                <div class="card-heading">I Should've Understood You More</div>
+                <p class="card-body">You weren't asking for too much… you were just asking to be understood. And maybe I failed to see that at the time. Now I realize, understanding someone is one of the purest forms of love. I wish I had done that better.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from clarity that came too late 🧠🤍</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-9">
+                <span class="card-icon">🌧️</span>
+                <div class="card-heading">If You Ever Felt Alone</div>
+                <p class="card-body">If you ever felt alone because of me, I want you to know that was never my intention. Sometimes people hurt others without even realizing it. And I hate that I might have been that person for you. You deserved to feel secure, not confused.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from a heart that regrets quietly 🌧️💔</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-10">
+                <span class="card-icon">🏡</span>
+                <div class="card-heading">A Soft Place for You</div>
+                <p class="card-body">No matter what changes, there will always be a soft place in my heart for you. Not loud, not obvious… but real. Some feelings don't need attention to exist. They just quietly stay.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from where you still belong 🏡🤍</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-11">
+                <span class="card-icon">⏳</span>
+                <div class="card-heading">Maybe We Needed Time</div>
+                <p class="card-body">Maybe everything that happened was meant to teach us something — about patience, about communication, about each other. Sometimes people don't lose each other… they just meet again in a better way later. And maybe, just maybe, that could be us.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from time that shaped us ⏳🌙</span>
+                </div>
+            </div>
+
+            <div class="msg-card nc-12">
+                <span class="card-icon">❤️</span>
+                <div class="card-heading">This Time, I Choose You Properly</div>
+                <p class="card-body">If I ever get the chance again, I won't take it lightly. I won't respond with half-effort or confusion. I'll choose you clearly, properly, and without hesitation. Because now I understand what I almost lost.</p>
+                <div class="card-from-wrap">
+                    <div class="card-from-line"></div>
+                    <span class="card-from">~ from a heart that's finally sure ❤️✨</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="footer-stars">✦ ✧ ✦ ✧ ✦</span>
+        <p class="footer-text">Made with all my heart for <strong>Niharika Niha</strong> — Happy 20th Birthday</p>
+    </footer>
+
+    <script>
+        // Scroll-triggered card reveals
+        const cards = document.querySelectorAll('.msg-card');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const siblings = [...entry.target.parentElement.children];
+                    const idx = siblings.indexOf(entry.target);
+                    entry.target.style.animationDelay = (idx % 3) * 0.1 + 's';
+                    entry.target.classList.add('visible');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        cards.forEach(c => io.observe(c));
+    </script>
 </body>
 </html>
