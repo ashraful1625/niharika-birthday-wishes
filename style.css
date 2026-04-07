@@ -248,6 +248,7 @@ body {
 }
 
 /* ==================== DASHBOARD PAGE ==================== */
+/* ==================== DASHBOARD PAGE ==================== */
 .dashboard-page {
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     min-height: 100vh;
@@ -278,13 +279,28 @@ body {
     margin-bottom: 30px;
 }
 
+/* ==================== SECTIONS GRID ==================== */
 .sections-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(12px, 3vw, 30px);
+    gap: clamp(14px, 3vw, 28px);
     margin-top: 20px;
 }
 
+/* Make it 3 columns on larger tablets and 4 on desktop */
+@media (min-width: 600px) {
+    .sections-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    .sections-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ==================== SECTION CARDS ==================== */
 .section-card {
     background: rgba(255,255,255,0.97);
     border-radius: 18px;
@@ -296,6 +312,11 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
 }
 
 .section-card::before {
@@ -309,16 +330,29 @@ body {
     transition: left 0.5s ease;
 }
 
-.section-card:hover::before { left: 100%; }
-.section-card:hover { transform: translateY(-8px); box-shadow: 0 15px 50px rgba(0,0,0,0.3); }
-.section-card:active { transform: scale(0.97); }
+.section-card:hover::before { 
+    left: 100%; 
+}
 
-.section-icon { font-size: clamp(2rem, 6vw, 4rem); margin-bottom: 10px; }
+.section-card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3); 
+}
+
+.section-card:active { 
+    transform: scale(0.97); 
+}
+
+.section-icon { 
+    font-size: clamp(2.2rem, 7vw, 4rem); 
+    margin-bottom: 12px; 
+}
 
 .section-card h3 {
-    font-size: clamp(0.9rem, 3vw, 1.5rem);
+    font-size: clamp(0.95rem, 3.2vw, 1.45rem);
     color: var(--secondary);
     margin-bottom: 6px;
+    font-weight: 700;
 }
 
 .section-card p {
@@ -334,9 +368,55 @@ body {
     color: var(--primary);
     font-weight: bold;
     font-size: 0.85rem;
+    margin-top: 6px;
 }
 
-.section-card:hover .card-hover { opacity: 1; }
+.section-card:hover .card-hover { 
+    opacity: 1; 
+}
+
+/* ==================== FULL WIDTH SPECIAL SURPRISES CARD ==================== */
+.section-card.full-width {
+    grid-column: 1 / -1;           /* Spans full width */
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    padding: clamp(20px, 4vw, 32px) clamp(20px, 5vw, 40px);
+    min-height: 140px;
+    background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%); /* Special pinkish look */
+    color: white;
+}
+
+.section-card.full-width .section-icon {
+    font-size: clamp(2.8rem, 8vw, 4.2rem);
+    margin-bottom: 0;
+}
+
+.section-card.full-width h3 {
+    color: white;
+    font-size: clamp(1.25rem, 4vw, 1.8rem);
+    margin-bottom: 4px;
+}
+
+.section-card.full-width p {
+    color: rgba(255,255,255,0.9);
+    display: block;
+    font-size: clamp(0.9rem, 2.6vw, 1.1rem);
+}
+
+.section-card.full-width:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.35);
+}
+
+/* Extra touch for mobile */
+@media (max-width: 599px) {
+    .section-card.full-width {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+}
 
 /* ==================== PAGE BACKGROUNDS ==================== */
 .gallery-page,
