@@ -4,7 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <title>Video Messages 🎥</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --cream: #fdf6ee;
+            --rose:  #c9485b;
+            --gold:  #c8963e;
+            --text:  #4a2c2a;
+        }
+
+        body.videos-page {
+            background: var(--cream);
+            font-family: 'Lora', Georgia, serif;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body.videos-page::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(245,198,203,0.22) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(200,150,62,0.12) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* NAVBAR */
+        .videos-page .navbar {
+            position: sticky; top: 0; z-index: 300;
+            background: linear-gradient(135deg, #c9485b 0%, #8b2252 100%);
+            padding: 12px 16px;
+            box-shadow: 0 4px 20px rgba(201,72,91,0.3);
+        }
+        .videos-page .nav-container {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        }
+        .videos-page .nav-title {
+            color: white;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+        }
+        .videos-page .nav-link {
+            color: white; text-decoration: none; font-weight: 600;
+            padding: 8px 16px; border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 20px; transition: all 0.3s; font-size: 0.9rem;
+            white-space: nowrap; min-height: 44px; display: flex; align-items: center;
+        }
+        .videos-page .nav-link:hover { background: white; color: var(--rose); }
+
+        /* CONTAINER */
+        .videos-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: clamp(28px,6vw,55px) clamp(14px,4vw,36px) 60px;
+            position: relative; z-index: 1;
+        }
+
+        .videos-container h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.7rem, 6vw, 3rem);
+            color: var(--rose);
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .videos-subtitle {
+            text-align: center;
+            color: var(--gold);
+            font-style: italic;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin-bottom: 10px;
+        }
+
+        .petal-divider {
+            display: block; margin: 10px auto 36px;
+            font-size: 1.2rem; letter-spacing: 6px; opacity: 0.55;
+            text-align: center;
+        }
+
+        /* VIDEOS GRID */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: clamp(16px, 3vw, 28px);
+        }
+        @media (min-width: 600px)  { .videos-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        /* VIDEO CARD */
+        .video-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(201,72,91,0.12);
+            border: 1.5px solid rgba(201,72,91,0.1);
+            animation: fadeUp 0.5s ease-out both;
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+            position: relative;
+        }
+        .video-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--rose), var(--gold));
+            z-index: 2;
+        }
+        .video-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(201,72,91,0.22);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .video-card:nth-child(1) { animation-delay:.06s }
+        .video-card:nth-child(2) { animation-delay:.14s }
+        .video-card:nth-child(3) { animation-delay:.22s }
+        .video-card:nth-child(4) { animation-delay:.30s }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #f5e6ea 0%, #fdf0e0 100%);
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+        .video-placeholder:hover {
+            background: linear-gradient(135deg, #f0d8de 0%, #f9e8d0 100%);
+        }
+
+        .video-play-btn {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose), #8b2252);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 6px 20px rgba(201,72,91,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .video-placeholder:hover .video-play-btn {
+            transform: scale(1.1);
+            box-shadow: 0 10px 28px rgba(201,72,91,0.5);
+        }
+        .video-play-btn::after {
+            content: '▶';
+            color: white;
+            font-size: 1.4rem;
+            margin-left: 4px;
+        }
+
+        .video-placeholder p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            color: var(--rose);
+        }
+
+        .video-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 3vw, 1.15rem);
+            font-style: italic;
+            color: var(--text);
+            padding: 14px 18px 16px;
+            text-align: center;
+        }
+
+        /* NOTE */
+        .video-note {
+            text-align: center;
+            margin-top: 32px;
+            font-style: italic;
+            color: var(--gold);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 4px 16px rgba(200,150,62,0.12);
+            border: 1.5px dashed rgba(200,150,62,0.4);
+        }
+    </style>
 </head>
 <body class="videos-page">
     <nav class="navbar">
@@ -16,38 +206,40 @@
 
     <div class="videos-container">
         <h1>Special Video Messages for Niharika 🎥</h1>
-        
+        <p class="videos-subtitle">Captured moments of love, just for you ✨</p>
+        <span class="petal-divider">🌸 ✦ 🌸 ✦ 🌸</span>
+
         <div class="videos-grid">
             <div class="video-card">
                 <div class="video-placeholder">
-                    <span>🎬</span>
+                    <div class="video-play-btn"></div>
                     <p>Video Message 1</p>
                 </div>
                 <p class="video-title">Birthday Surprise</p>
             </div>
             <div class="video-card">
                 <div class="video-placeholder">
-                    <span>🎬</span>
+                    <div class="video-play-btn"></div>
                     <p>Video Message 2</p>
                 </div>
                 <p class="video-title">Friends Wish You</p>
             </div>
             <div class="video-card">
                 <div class="video-placeholder">
-                    <span>🎬</span>
+                    <div class="video-play-btn"></div>
                     <p>Video Message 3</p>
                 </div>
                 <p class="video-title">Family Wishes</p>
             </div>
             <div class="video-card">
                 <div class="video-placeholder">
-                    <span>🎬</span>
+                    <div class="video-play-btn"></div>
                     <p>Video Message 4</p>
                 </div>
                 <p class="video-title">Special Compilation</p>
             </div>
         </div>
-        <p class="video-note">Add your video messages by uploading them here!</p>
+        <p class="video-note">🎬 Add your video messages by uploading them here!</p>
     </div>
 
     <script src="script.js"></script>
