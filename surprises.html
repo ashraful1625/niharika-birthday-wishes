@@ -4,7 +4,219 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <title>Special Surprises 🎁</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --cream: #fdf6ee;
+            --rose:  #c9485b;
+            --gold:  #c8963e;
+            --text:  #4a2c2a;
+        }
+
+        body.surprises-page {
+            background: var(--cream);
+            font-family: 'Lora', Georgia, serif;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body.surprises-page::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(245,198,203,0.22) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(200,150,62,0.12) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* NAVBAR */
+        .surprises-page .navbar {
+            position: sticky; top: 0; z-index: 300;
+            background: linear-gradient(135deg, #c9485b 0%, #8b2252 100%);
+            padding: 12px 16px;
+            box-shadow: 0 4px 20px rgba(201,72,91,0.3);
+        }
+        .surprises-page .nav-container {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        }
+        .surprises-page .nav-title {
+            color: white;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+        }
+        .surprises-page .nav-link {
+            color: white; text-decoration: none; font-weight: 600;
+            padding: 8px 16px; border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 20px; transition: all 0.3s; font-size: 0.9rem;
+            white-space: nowrap; min-height: 44px; display: flex; align-items: center;
+        }
+        .surprises-page .nav-link:hover { background: white; color: var(--rose); }
+
+        /* CONTAINER */
+        .surprises-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: clamp(28px,6vw,55px) clamp(14px,4vw,36px) 60px;
+            position: relative; z-index: 1;
+        }
+
+        .surprises-container h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.7rem, 6vw, 3rem);
+            color: var(--rose);
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .surprises-subtitle {
+            text-align: center;
+            color: var(--gold);
+            font-style: italic;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin-bottom: 10px;
+        }
+
+        .petal-divider {
+            display: block; margin: 10px auto 36px;
+            font-size: 1.2rem; letter-spacing: 6px; opacity: 0.55;
+            text-align: center;
+        }
+
+        /* COUNTER */
+        .opened-counter {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.15rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        /* SURPRISE SECTION GRID */
+        .surprise-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(14px, 3vw, 24px);
+        }
+        @media (min-width: 700px)  { .surprise-section { grid-template-columns: repeat(3, 1fr); } }
+
+        /* SURPRISE BOX */
+        .surprise-box {
+            background: white;
+            border-radius: 20px;
+            padding: clamp(20px, 4vw, 30px) 16px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(201,72,91,0.12);
+            border: 1.5px solid rgba(201,72,91,0.1);
+            transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.3s;
+            animation: fadeUp 0.5s ease-out both;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .surprise-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--rose), var(--gold));
+            border-radius: 4px 4px 0 0;
+        }
+        .surprise-box:not(.opened):hover {
+            transform: translateY(-6px) rotate(-1deg);
+            box-shadow: 0 16px 36px rgba(201,72,91,0.22);
+        }
+        .surprise-box:not(.opened):active { transform: scale(0.96); }
+
+        .surprise-box.opened {
+            background: linear-gradient(135deg, #fde8ec, #fdf0e0);
+            border-color: rgba(201,72,91,0.25);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .surprise-box:nth-child(1) { animation-delay:.06s }
+        .surprise-box:nth-child(2) { animation-delay:.14s }
+        .surprise-box:nth-child(3) { animation-delay:.22s }
+        .surprise-box:nth-child(4) { animation-delay:.30s }
+        .surprise-box:nth-child(5) { animation-delay:.38s }
+        .surprise-box:nth-child(6) { animation-delay:.46s }
+
+        .box-icon {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            margin-bottom: 12px;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .surprise-box:not(.opened):hover .box-icon { transform: scale(1.15) rotate(-5deg); }
+
+        .box-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+            color: var(--rose);
+            margin-bottom: 0;
+        }
+
+        .surprise-content {
+            margin-top: 14px;
+            padding: 12px 10px 4px;
+            border-top: 1.5px dashed rgba(201,72,91,0.25);
+        }
+
+        .surprise-content p {
+            font-family: 'Lora', serif;
+            font-size: clamp(0.88rem, 2.5vw, 1rem);
+            line-height: 1.7;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        /* CONFETTI */
+        .confetti-piece {
+            position: fixed; pointer-events: none;
+            z-index: 9999; border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0%   { opacity: 1; }
+            100% { opacity: 0; transform: translateY(120px) rotate(360deg); }
+        }
+
+        /* ALL OPENED BANNER */
+        .all-banner {
+            display: none;
+            text-align: center;
+            margin-top: 36px;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 6px 20px rgba(201,72,91,0.15);
+            border: 1.5px solid rgba(201,72,91,0.2);
+            animation: popIn 0.4s cubic-bezier(0.34,1.4,0.64,1);
+        }
+        .all-banner.show { display: block; }
+        .all-banner p {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            font-style: italic;
+            color: var(--rose);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.82); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+    </style>
 </head>
 <body class="surprises-page">
     <nav class="navbar">
@@ -15,84 +227,131 @@
     </nav>
 
     <div class="surprises-container">
-        <h1>Secrets & Surprises for Your Birthday 🎊</h1>
-        
+        <h1>Secrets &amp; Surprises for Your Birthday 🎊</h1>
+        <p class="surprises-subtitle">Six little gifts, wrapped up in love, just for you ✨</p>
+        <span class="petal-divider">🌸 ✦ 🌸 ✦ 🌸</span>
+
+        <p class="opened-counter">
+            You've opened <span id="openedCount">0</span> of 6 surprises 🎁
+        </p>
+
         <div class="surprise-section">
+
             <div class="surprise-box" onclick="openSurprise(this)">
-                <div class="box-icon">🎁</div>
-                <p>Click to Reveal Surprise #1</p>
+                <span class="box-icon">🎁</span>
+                <p class="box-label">Click to Reveal Surprise #1</p>
                 <div class="surprise-content" style="display: none;">
                     <p>🎉 A special birthday shoutout from everyone who loves you!</p>
                 </div>
             </div>
 
             <div class="surprise-box" onclick="openSurprise(this)">
-                <div class="box-icon">🎈</div>
-                <p>Click to Reveal Surprise #2</p>
+                <span class="box-icon">🎈</span>
+                <p class="box-label">Click to Reveal Surprise #2</p>
                 <div class="surprise-content" style="display: none;">
                     <p>🌟 You deserve all the happiness in the world on your 20th!</p>
                 </div>
             </div>
 
             <div class="surprise-box" onclick="openSurprise(this)">
-                <div class="box-icon">🎊</div>
-                <p>Click to Reveal Surprise #3</p>
+                <span class="box-icon">🎊</span>
+                <p class="box-label">Click to Reveal Surprise #3</p>
                 <div class="surprise-content" style="display: none;">
                     <p>💝 May all your dreams come true this year!</p>
                 </div>
             </div>
 
             <div class="surprise-box" onclick="openSurprise(this)">
-                <div class="box-icon">🎀</div>
-                <p>Click to Reveal Surprise #4</p>
+                <span class="box-icon">🎀</span>
+                <p class="box-label">Click to Reveal Surprise #4</p>
                 <div class="surprise-content" style="display: none;">
                     <p>✨ You are loved and appreciated more than you know!</p>
                 </div>
             </div>
 
             <div class="surprise-box" onclick="openSurprise(this)">
-                <div class="box-icon">💝</div>
-                <p>Click to Reveal Surprise #5</p>
+                <span class="box-icon">💝</span>
+                <p class="box-label">Click to Reveal Surprise #5</p>
                 <div class="surprise-content" style="display: none;">
                     <p>🎂 Here's to making your 20th the best year ever!</p>
                 </div>
             </div>
 
             <div class="surprise-box" onclick="openSurprise(this)">
-                <div class="box-icon">🌟</div>
-                <p>Click to Reveal Surprise #6</p>
+                <span class="box-icon">🌟</span>
+                <p class="box-label">Click to Reveal Surprise #6</p>
                 <div class="surprise-content" style="display: none;">
-                    <p>🎉 Thank you for being YOU! Happy Birthday!</p>
+                    <p>🎉 Thank you for being YOU! Happy Birthday, Niharika!</p>
                 </div>
             </div>
+
+        </div>
+
+        <div id="allBanner" class="all-banner">
+            <p>🎊 You've revealed all your surprises! We love you so much, Niharika! 🎊</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
+        let openedCount = 0;
+        const total = 6;
+
         function openSurprise(element) {
+            if (element.classList.contains('opened')) {
+                // toggle close
+                const content = element.querySelector('.surprise-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                return;
+            }
+
             const content = element.querySelector('.surprise-content');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                element.style.backgroundColor = '#FFE5B4';
-                triggerConfetti();
-            } else {
-                content.style.display = 'none';
-                element.style.backgroundColor = '';
+            content.style.display = 'block';
+            element.classList.add('opened');
+            openedCount++;
+            document.getElementById('openedCount').textContent = openedCount;
+            triggerConfetti(element);
+
+            if (openedCount === total) {
+                setTimeout(() => {
+                    document.getElementById('allBanner').classList.add('show');
+                    bigConfetti();
+                }, 500);
             }
         }
 
-        function triggerConfetti() {
-            for (let i = 0; i < 20; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * window.innerWidth + 'px';
-                confetti.style.top = '0px';
-                confetti.style.background = ['#667eea', '#764ba2', '#ffd700', '#ff6b9d'][Math.floor(Math.random() * 4)];
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
+        function triggerConfetti(element) {
+            const rect = element.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const cols = ['#c9485b','#f5c6cb','#ffd700','#764ba2','#2e7d5e','#fff','#ff6b9d','#c8963e'];
+            for (let i = 0; i < 22; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                const sz = 5 + Math.random() * 8;
+                const a  = Math.random() * 360;
+                const d  = 90 + Math.random() * 130;
+                const dx = Math.cos(a * Math.PI/180) * d;
+                const dy = Math.sin(a * Math.PI/180) * d - 80;
+                el.style.cssText = `left:${cx}px;top:${cy}px;width:${sz}px;height:${sz*(Math.random()>.5?1:2.4)}px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${0.9+Math.random()*0.9}s;transform:translate(${dx}px,${dy}px)`;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 2000);
+            }
+        }
+
+        function bigConfetti() {
+            const cols = ['#c9485b','#f5c6cb','#ffd700','#764ba2','#2e7d5e','#fff','#ff6b9d','#c8963e'];
+            for (let i = 0; i < 90; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = 'confetti-piece';
+                    const sz = 7 + Math.random() * 9;
+                    el.style.cssText = `left:${Math.random()*100}vw;top:-20px;width:${sz}px;height:${sz*(Math.random()>.5?1:2.5)}px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${2+Math.random()*2.2}s`;
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 5000);
+                }, i * 28);
             }
         }
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
