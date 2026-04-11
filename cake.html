@@ -4,161 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>3D Birthday Cake - Cut & Blow the Candle | For My Love</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --cream: #fdf6ee;
+            --rose:  #c9485b;
+            --gold:  #c8963e;
+            --text:  #4a2c2a;
+        }
+
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif;
+            font-family: 'Lora', Georgia, serif;
         }
-        
-        /* UI Overlays */
+
+        /* ── MESSAGE OVERLAY (bottom centre) ── */
         .message-overlay {
             position: absolute;
-            bottom: 25px;
-            left: 0;
-            right: 0;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
             pointer-events: none;
             z-index: 20;
-            text-shadow: 0 0 20px rgba(0,0,0,0.6);
-            font-weight: 600;
-            color: #fff3e0;
-            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.5), transparent);
-            padding: 12px;
-            backdrop-filter: blur(5px);
-            border-radius: 40px;
-            width: fit-content;
-            margin: 0 auto;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+            background: rgba(253,246,238,0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(201,72,91,0.25);
+            border-radius: 50px;
+            padding: 10px 28px;
+            white-space: nowrap;
         }
-        
+
         .message-overlay h1 {
-            margin: 0;
-            font-size: 1.8rem;
+            margin: 0 0 2px;
             font-family: 'Dancing Script', cursive;
-            letter-spacing: 2px;
+            font-size: clamp(1.2rem, 4vw, 1.75rem);
+            color: #fff0e6;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 12px rgba(201,72,91,0.5);
         }
-        
+
+        .message-overlay p {
+            margin: 0;
+            font-family: 'Lora', serif;
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            color: rgba(255,240,220,0.8);
+            font-style: italic;
+        }
+
+        /* ── SLICE COUNTER (top right) ── */
         .cut-info {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            padding: 12px 20px;
+            background: rgba(253,246,238,0.16);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(200,150,62,0.35);
+            padding: 10px 20px;
             border-radius: 40px;
-            color: #ffd966;
-            font-weight: bold;
-            font-size: 1.2rem;
-            font-family: monospace;
-            letter-spacing: 1px;
+            color: #fde8ec;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.95rem, 3vw, 1.2rem);
+            letter-spacing: 0.5px;
             pointer-events: none;
             z-index: 20;
-            border-left: 3px solid #ffb347;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
-        
+
         .cut-info span {
-            color: #ffaa66;
-            font-size: 1.6rem;
+            color: #f5c6cb;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
             font-weight: 800;
         }
-        
+
+        /* ── INSTRUCTION (bottom left) ── */
         .instruction {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.6);
-            padding: 8px 16px;
+            background: rgba(253,246,238,0.12);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(201,72,91,0.2);
+            padding: 7px 16px;
             border-radius: 30px;
-            color: #ffdd99;
-            font-size: 0.85rem;
+            color: rgba(255,240,220,0.85);
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: clamp(0.72rem, 2vw, 0.85rem);
             pointer-events: none;
-            font-family: monospace;
-            backdrop-filter: blur(4px);
             z-index: 20;
         }
-        
+
+        /* ── BLOW CANDLE BUTTON ── */
         .blow-btn {
             position: absolute;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #ff9a3c, #ff5e3a);
+            background: linear-gradient(135deg, var(--rose) 0%, #8b2252 100%);
             border: none;
             color: white;
-            font-weight: bold;
-            padding: 12px 24px;
+            font-family: 'Dancing Script', cursive;
+            font-weight: 700;
+            font-size: clamp(1rem, 3.5vw, 1.25rem);
+            padding: 12px 28px;
             border-radius: 50px;
-            font-size: 1.2rem;
             cursor: pointer;
             z-index: 30;
-            font-family: 'Poppins', sans-serif;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 20px rgba(201,72,91,0.4);
             transition: transform 0.2s, box-shadow 0.2s;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            border: 1.5px solid rgba(255,255,255,0.15);
         }
-        
+
         .blow-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            background: linear-gradient(135deg, #ffb347, #ff6a3a);
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: 0 10px 28px rgba(201,72,91,0.55);
         }
-        
-        .blow-btn:active {
-            transform: scale(0.98);
+
+        .blow-btn:active { transform: scale(0.97); }
+
+        /* ── CONTROLS NOTE ── */
+        .controls-note {
+            position: absolute;
+            bottom: 70px;
+            left: 20px;
+            background: rgba(253,246,238,0.08);
+            font-family: 'Lora', serif;
+            font-size: 10px;
+            font-style: italic;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: rgba(255,240,220,0.5);
+            pointer-events: none;
         }
-        
+
+        /* ── SPARKLE & SMOKE ── */
         @keyframes floatGlow {
-            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            0%   { transform: translateY(0) scale(1);  opacity: 0.9; }
             100% { transform: translateY(-100px) scale(0); opacity: 0; }
         }
-        
+
         .sparkle {
             position: absolute;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle, #ffcc44, #ff8844);
+            width: 7px; height: 7px;
+            background: radial-gradient(circle, #f5c6cb, #c9485b);
             border-radius: 50%;
             pointer-events: none;
             z-index: 25;
             animation: floatGlow 1s ease-out forwards;
         }
-        
+
         .smoke-particle {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(200,200,200,0.7), rgba(150,150,150,0));
+            width: 20px; height: 20px;
+            background: radial-gradient(circle, rgba(253,246,238,0.6), rgba(200,150,62,0));
             border-radius: 50%;
             pointer-events: none;
             z-index: 25;
             animation: riseSmoke 2s ease-out forwards;
         }
-        
+
         @keyframes riseSmoke {
-            0% { transform: translateY(0) scale(0.5); opacity: 0.6; }
+            0%   { transform: translateY(0) scale(0.5); opacity: 0.6; }
             100% { transform: translateY(-150px) scale(2); opacity: 0; }
         }
-        
+
         @media (max-width: 600px) {
-            .message-overlay h1 { font-size: 1.2rem; }
-            .cut-info { font-size: 0.9rem; top: 10px; right: 10px; padding: 6px 12px; }
-            .blow-btn { padding: 8px 16px; font-size: 1rem; bottom: 20px; right: 20px; }
-        }
-        
-        .controls-note {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.4);
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 20px;
-            color: #ccc;
-            pointer-events: none;
-            font-family: monospace;
-            bottom: 70px;
+            .message-overlay { bottom: 80px; padding: 8px 18px; }
+            .message-overlay h1 { font-size: 1.1rem; }
+            .cut-info { top: 10px; right: 10px; padding: 6px 14px; font-size: 0.9rem; }
+            .blow-btn { padding: 10px 20px; font-size: 1rem; bottom: 20px; right: 16px; }
+            .instruction { display: none; }
         }
     </style>
 </head>
@@ -430,15 +451,18 @@
                     wishMsg.style.top = '35%';
                     wishMsg.style.left = '50%';
                     wishMsg.style.transform = 'translateX(-50%)';
-                    wishMsg.style.background = 'rgba(0,0,0,0.8)';
-                    wishMsg.style.color = '#ffdd99';
-                    wishMsg.style.padding = '16px 28px';
+                    wishMsg.style.background = 'rgba(253,246,238,0.18)';
+                    wishMsg.style.backdropFilter = 'blur(14px)';
+                    wishMsg.style.webkitBackdropFilter = 'blur(14px)';
+                    wishMsg.style.border = '1.5px solid rgba(201,72,91,0.35)';
+                    wishMsg.style.color = '#fff0e6';
+                    wishMsg.style.padding = '16px 32px';
                     wishMsg.style.borderRadius = '60px';
-                    wishMsg.style.fontSize = '1.6rem';
-                    wishMsg.style.fontFamily = 'cursive';
-                    wishMsg.style.fontWeight = 'bold';
+                    wishMsg.style.fontSize = '1.5rem';
+                    wishMsg.style.fontFamily = "'Dancing Script', cursive";
+                    wishMsg.style.fontWeight = '700';
                     wishMsg.style.zIndex = 100;
-                    wishMsg.style.backdropFilter = 'blur(8px)';
+                    wishMsg.style.textShadow = '0 2px 10px rgba(201,72,91,0.5)';
                     wishMsg.style.whiteSpace = 'nowrap';
                     document.body.appendChild(wishMsg);
                     setTimeout(() => wishMsg.remove(), 4000);
@@ -470,11 +494,15 @@
                 alreadyMsg.style.bottom = '40%';
                 alreadyMsg.style.left = '50%';
                 alreadyMsg.style.transform = 'translateX(-50%)';
-                alreadyMsg.style.background = '#ffddccdd';
-                alreadyMsg.style.padding = '10px 20px';
+                alreadyMsg.style.background = 'rgba(253,246,238,0.18)';
+                alreadyMsg.style.backdropFilter = 'blur(12px)';
+                alreadyMsg.style.border = '1.5px solid rgba(200,150,62,0.35)';
+                alreadyMsg.style.padding = '10px 24px';
                 alreadyMsg.style.borderRadius = '40px';
-                alreadyMsg.style.color = '#a53f2b';
-                alreadyMsg.style.fontWeight = 'bold';
+                alreadyMsg.style.color = '#fff0e6';
+                alreadyMsg.style.fontFamily = "'Dancing Script', cursive";
+                alreadyMsg.style.fontWeight = '700';
+                alreadyMsg.style.fontSize = '1.1rem';
                 alreadyMsg.style.zIndex = 100;
                 document.body.appendChild(alreadyMsg);
                 setTimeout(() => alreadyMsg.remove(), 2000);
@@ -561,11 +589,15 @@
                 fullMsg.style.bottom = '45%';
                 fullMsg.style.left = '50%';
                 fullMsg.style.transform = 'translateX(-50%)';
-                fullMsg.style.background = '#f9e2c7';
-                fullMsg.style.padding = '12px 24px';
+                fullMsg.style.background = 'rgba(253,246,238,0.18)';
+                fullMsg.style.backdropFilter = 'blur(12px)';
+                fullMsg.style.border = '1.5px solid rgba(201,72,91,0.3)';
+                fullMsg.style.padding = '12px 28px';
                 fullMsg.style.borderRadius = '40px';
-                fullMsg.style.fontWeight = 'bold';
-                fullMsg.style.color = '#b45f2b';
+                fullMsg.style.fontFamily = "'Dancing Script', cursive";
+                fullMsg.style.fontWeight = '700';
+                fullMsg.style.fontSize = '1.1rem';
+                fullMsg.style.color = '#fff0e6';
                 fullMsg.style.zIndex = 100;
                 document.body.appendChild(fullMsg);
                 setTimeout(() => fullMsg.remove(), 2000);
@@ -603,10 +635,15 @@
                     cutMsg.style.top = '25%';
                     cutMsg.style.left = '50%';
                     cutMsg.style.transform = 'translateX(-50%)';
-                    cutMsg.style.background = 'rgba(0,0,0,0.6)';
-                    cutMsg.style.padding = '8px 18px';
+                    cutMsg.style.background = 'rgba(253,246,238,0.16)';
+                    cutMsg.style.backdropFilter = 'blur(10px)';
+                    cutMsg.style.border = '1.5px solid rgba(200,150,62,0.3)';
+                    cutMsg.style.padding = '8px 22px';
                     cutMsg.style.borderRadius = '40px';
-                    cutMsg.style.color = '#ffdd99';
+                    cutMsg.style.color = '#fff0e6';
+                    cutMsg.style.fontFamily = "'Dancing Script', cursive";
+                    cutMsg.style.fontWeight = '700';
+                    cutMsg.style.fontSize = '1.1rem';
                     cutMsg.style.zIndex = 100;
                     document.body.appendChild(cutMsg);
                     setTimeout(() => cutMsg.remove(), 2500);
@@ -633,15 +670,17 @@
         
         // CSS2D birthday label
         const labelDiv = document.createElement('div');
-        labelDiv.textContent = '❤️ My Dearest ❤️';
-        labelDiv.style.color = '#ffe0b5';
-        labelDiv.style.fontSize = '18px';
-        labelDiv.style.fontWeight = 'bold';
-        labelDiv.style.textShadow = '1px 1px 0 #aa5533';
-        labelDiv.style.background = 'rgba(0,0,0,0.4)';
-        labelDiv.style.padding = '5px 14px';
+        labelDiv.textContent = '🌸 My Dearest Niharika 🌸';
+        labelDiv.style.color = '#fff0e6';
+        labelDiv.style.fontSize = '16px';
+        labelDiv.style.fontWeight = '700';
+        labelDiv.style.textShadow = '0 2px 10px rgba(201,72,91,0.5)';
+        labelDiv.style.background = 'rgba(253,246,238,0.14)';
+        labelDiv.style.backdropFilter = 'blur(8px)';
+        labelDiv.style.padding = '5px 16px';
         labelDiv.style.borderRadius = '40px';
-        labelDiv.style.fontFamily = 'cursive';
+        labelDiv.style.border = '1px solid rgba(201,72,91,0.25)';
+        labelDiv.style.fontFamily = "'Dancing Script', cursive";
         const labelObj = new CSS2DObject(labelDiv);
         labelObj.position.set(0, 2.65, 0);
         cakeGroup.add(labelObj);
